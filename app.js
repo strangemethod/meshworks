@@ -1,13 +1,20 @@
 var app = (function(){
 	
-	function setupCanvas(){
-
-		app.canvas = document.getElementById("app");
-		app.countPoints = 500;
-		app.connectionDepth = 5;
+	function init(){
+		app.canvas = document.getElementById("meshworks");
+		app.pointsEl = document.getElementById("points");	
+		app.connectionsEl = document.getElementById("connections");	
+		app.validationEl = document.getElementById("validation");	
+		app.countPoints = app.pointsEl.value;
+		app.connectionDepth = app.connectionsEl.value;
 		app.canvas.width = app.windowWidth = window.innerWidth;
 		app.canvas.height = app.windowHeight =  window.innerHeight;
 		app.ctx = app.canvas.getContext("2d");
+		setupCanvas();
+	}
+
+	function setupCanvas(){
+
 		app.points = [];
 
 		// draw points
@@ -19,6 +26,23 @@ var app = (function(){
 		for (var i=0; i<app.countPoints; i++){
 			connectNearestPoints(i, app.connectionDepth);
 		}
+	}
+
+	function clearCanvas(){
+
+		var countPoints = Number(app.pointsEl.value);
+		var connectionDepth = Number(app.connectionsEl.value);
+
+		if (connectionDepth < countPoints){
+			app.validationEl.textContent = '';
+			app.countPoints = countPoints;
+			app.connectionDepth = connectionDepth;
+			app.ctx.clearRect(0, 0, app.canvas.width, app.canvas.height);
+			setupCanvas();
+
+		} else {
+			app.validationEl.textContent = 'There cannot be more connections than points.';
+		}
 
 	}
 
@@ -26,9 +50,12 @@ var app = (function(){
 			var point = app.points[i],
 				exclusions = [i];
 
+			// iterate grayscale values between 0-250
+			var colorCoefficient = 250 / depth;
+
 			for (var n=0; n<depth; n++){
 				var closest = findClosestPoint(point, exclusions);
-				var colorVal = n*5; // iterate color value
+				var colorVal = n*colorCoefficient; // iterate color value
 				drawLine(point, app.points[closest], colorVal);
 				exclusions.push(closest);
 				
@@ -85,7 +112,8 @@ var app = (function(){
 	}
 
 	return {
-		init: setupCanvas
+		init: init,
+		redraw: clearCanvas
 	}
 
 })();

@@ -1,22 +1,18 @@
 <html>
 	<head>
-		<style>
-			body {
-				margin: 0;
-				width: 100vw;
-				height: 100vh;
-			}
-
-			#app {
-				background: #eee;
-			}
-		</style>
+		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-
-		<canvas id="app"></canvas>
-
+		<canvas id="meshworks"></canvas>
+		<section id="controls">
+			<label for="points">Points</label>
+			<input type="number" id="points" name="points" min="10" value="1000" />
+			<label for="points">Connections</label>
+			<input type="number" id="connections" name="connections" min="1" value="25" />
+			<div id="validation"></div>
+			<input type="submit" class="submit" value="render" onclick="app.redraw();">
+			<div id="loader"></div>
+		</section>
 	</body>
-
 	<script type="text/javascript" src="app.js"></script>
 </html>
